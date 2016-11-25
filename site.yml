@@ -8,11 +8,9 @@
     - common
   tasks:
     - name: try root login to disable sudo requiretty (hack for molecule)
-      lineinfile:
-        dest: /etc/sudoers
-        regexp: '^Defaults\s+requiretty'
-        state: absent
+      local_action: command ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes root@{{ ansible_ssh_host }} "sed -e '/^Defaults[[:space:]]\+requiretty/d ' -i /etc/sudoers"
       failed_when: false
+      changed_when: False
 
     - name: check root login
       local_action: command ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes root@{{ ansible_ssh_host }} true
